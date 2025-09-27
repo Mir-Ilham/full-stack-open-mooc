@@ -5,10 +5,9 @@ sequenceDiagram
 
     browser->>server: POST https://studies.cs.helsinki.fi/exampleapp/new_note
     activate server
+    Note left of server: The server creates a new note object and adds it to notes array
     server-->>browser: redirect to https://studies.cs.helsinki.fi/exampleapp/note
     deactivate server
-
-    Note right of server: The server creates a new note object and adds it to notes array
 
     browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/notes
     activate server
