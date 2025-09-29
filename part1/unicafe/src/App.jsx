@@ -7,6 +7,12 @@ const Button = ({text, onClick}) => {
 }
 
 const Stat = ({text, count}) => {
+  if (text == 'positive') {
+    return (
+      <p>{text} {count} %</p>
+    )
+  }
+
   return (
     <p>{text} {count}</p>
   )
@@ -31,6 +37,10 @@ const App = () => {
       <Stat text='good' count={good} />
       <Stat text='neutral' count={neutral} />
       <Stat text='bad' count={bad} />
+      <Stat text='all' count={good + bad + neutral} />
+      <Stat text='average' count={(good - bad) / (good + bad + neutral)} />
+      <Stat text='positive' count={good / (good + bad + neutral)} />
+
     </div>
   )
 }
