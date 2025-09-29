@@ -6,7 +6,7 @@ const Button = ({text, onClick}) => {
   )
 }
 
-const Stat = ({text, count}) => {
+const StatisticLine = ({text, count}) => {
   if (text == 'positive') {
     return (
       <p>{text} {count} %</p>
@@ -27,12 +27,12 @@ const Statistics = ({good, neutral, bad}) => {
 
   return (
     <>
-      <Stat text='good' count={good} />
-      <Stat text='neutral' count={neutral} />
-      <Stat text='bad' count={bad} />
-      <Stat text='all' count={good + bad + neutral} />
-      <Stat text='average' count={(good - bad) / (good + bad + neutral)} />
-      <Stat text='positive' count={good / (good + bad + neutral)} />
+      <StatisticLine text='good' count={good} />
+      <StatisticLine text='neutral' count={neutral} />
+      <StatisticLine text='bad' count={bad} />
+      <StatisticLine text='all' count={good + bad + neutral} />
+      <StatisticLine text='average' count={(good - bad) / (good + bad + neutral)} />
+      <StatisticLine text='positive' count={good / (good + bad + neutral)} />
     </>
   )
 }
