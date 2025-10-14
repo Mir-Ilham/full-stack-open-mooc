@@ -1,5 +1,45 @@
 import { useState } from 'react'
 
+const Filter = ({query, changeQuery}) => {
+  return (
+    <div>
+      Search: <input value={query} onChange={changeQuery}/>
+    </div>
+  )
+}
+
+const PersonForm = ({addPerson, newName, changeInputName, newNumber, changeNumber}) => {
+  return (
+    <form onSubmit={addPerson}>
+      <div>
+        name: <input value={newName} onChange={changeInputName}/>
+      </div>
+      <div>
+        phone: <input value={newNumber} onChange={changeNumber}/>
+      </div>
+      <div>
+        <button type="submit">add</button>
+      </div>
+    </form>
+  )
+}
+
+const Person = ({name, number}) => {
+  return (
+    <p>{name} {number}</p>
+  )
+}
+
+const Persons = ({personsToDisplay}) => {
+  return (
+    <>
+      {personsToDisplay.map((person) =>
+        <Person key={person.id} name={person.name} number={person.number} />
+      )}
+    </>
+  )
+}
+
 const App = () => {
   const [persons, setPersons] = useState([
     { name: 'Arto Hellas', number: '040-123456', id: 1 },
@@ -52,27 +92,15 @@ const App = () => {
     <div>
       <h2>Phonebook</h2>
       
-      <div>
-        Search: <input value={query} onChange={changeQuery}/>
-      </div>
+      <Filter query={query} changeQuery={changeQuery} />
 
       <h2>add a new</h2>
-      <form onSubmit={addPerson}>
-        <div>
-          name: <input value={newName} onChange={changeInputName}/>
-        </div>
-        <div>
-          phone: <input value={newNumber} onChange={changeNumber}/>
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
+
+      <PersonForm addPerson={addPerson} newName={newName} changeInputName={changeInputName} newNumber={newNumber} changeNumber={changeNumber} />
 
       <h2>Numbers</h2>
-      {personsToDisplay.map((person) =>
-        <p key={person.id}>{person.name} {person.number}</p>
-      )}
+
+      <Persons personsToDisplay={personsToDisplay} />
 
     </div>
   )
