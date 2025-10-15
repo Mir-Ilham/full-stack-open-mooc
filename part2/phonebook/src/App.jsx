@@ -77,14 +77,25 @@ const App = () => {
   const addPerson = (event) => {
     event.preventDefault()
 
+    const match = persons.find(person => person.name === newName)
+
+    if (match) {
+      if (window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)) {
+        personService
+          .updatePerson(match.id, {...match, number: newNumber})
+          .then(updatedPerson => {
+            setPersons(persons.map(person => person.id == updatedPerson.id ? updatedPerson : person))
+          })
+          .catch(error => {
+            alert('An error occured.')
+          })
+      }
+      return
+    }
+
     const personObject = {
       name: newName,
       number: newNumber
-    }
-
-    if (persons.find(person => person.name === newName)) {
-      alert(`${newName} is already added to phonebook`)
-      return
     }
 
     personService
