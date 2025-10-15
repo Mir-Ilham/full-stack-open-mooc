@@ -25,17 +25,20 @@ const PersonForm = ({addPerson, newName, changeInputName, newNumber, changeNumbe
   )
 }
 
-const Person = ({name, number}) => {
+const Person = ({name, number, deletePersonOf}) => {
   return (
-    <p>{name} {number}</p>
+    <p>
+      {name} {number} &nbsp;
+      <button onClick={deletePersonOf}>delete</button>
+    </p>
   )
 }
 
-const Persons = ({personsToDisplay}) => {
+const Persons = ({personsToDisplay, deletePersonHandler}) => {
   return (
     <>
       {personsToDisplay.map((person) =>
-        <Person key={person.id} name={person.name} number={person.number} />
+        <Person key={person.id} name={person.name} number={person.number} deletePersonOf={() => deletePersonHandler(person.id)}/>
       )}
     </>
   )
@@ -62,9 +65,12 @@ const App = () => {
 
   useEffect(() => {
     personService
-      .getAll()
+      .getAllPersons()
       .then(initialPersons => {
         setPersons(initialPersons)
+      })
+      .catch(error => {
+        alert('An error occured.')
       })
   }, [])
 
@@ -82,13 +88,31 @@ const App = () => {
     }
 
     personService
-      .create(personObject)
+      .createPerson(personObject)
       .then(returnedPerson => {
         setPersons(persons.concat(returnedPerson))
         setNewName('')
         setNewNumber('')
       })
+      .catch(error => {
+        alert('An error occured.')
+      })
+  }
 
+  const deletePersonHandler = personId => {
+    if (window.confirm("Do you want to delete this person entry?")) {
+      personService
+        .deletePerson(personId)
+        .then(deletedPerson => {
+          const newPersons = persons.filter(person =>
+            person.id != deletedPerson.id
+          )
+          setPersons(newPersons)
+        })
+        .catch(error => {
+          alert('An error occured.')
+        })
+    }
   }
 
   const personsToDisplay = persons.filter(person => {
@@ -108,7 +132,7 @@ const App = () => {
 
       <h2>Numbers</h2>
 
-      <Persons personsToDisplay={personsToDisplay} />
+      <Persons personsToDisplay={personsToDisplay} deletePersonHandler={deletePersonHandler} />
 
     </div>
   )
