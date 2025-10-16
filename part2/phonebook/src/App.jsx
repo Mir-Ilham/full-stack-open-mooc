@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import Notification from './components/Notification'
 import personService from './services/persons'
 
 const Filter = ({query, changeQuery}) => {
@@ -49,7 +50,7 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [query, setQuery] = useState('')
-
+  const [message, setMessage] = useState(null)
 
   const changeInputName = (event) => {
     setNewName(event.target.value)
@@ -85,6 +86,11 @@ const App = () => {
           .updatePerson(match.id, {...match, number: newNumber})
           .then(updatedPerson => {
             setPersons(persons.map(person => person.id == updatedPerson.id ? updatedPerson : person))
+            
+            setMessage(`${updatedPerson.name}'s number updated.`)
+            setTimeout(() => {
+              setMessage(null)
+            }, 5000)
           })
           .catch(error => {
             alert('An error occured.')
@@ -104,6 +110,11 @@ const App = () => {
         setPersons(persons.concat(returnedPerson))
         setNewName('')
         setNewNumber('')
+
+        setMessage(`${returnedPerson.name}'s number added.`)
+        setTimeout(() => {
+          setMessage(null)
+        }, 5000)
       })
       .catch(error => {
         alert('An error occured.')
@@ -119,6 +130,11 @@ const App = () => {
             person.id != deletedPerson.id
           )
           setPersons(newPersons)
+
+          setMessage(`${deletedPerson.name}'s number deleted.`)
+          setTimeout(() => {
+            setMessage(null)
+          }, 5000)
         })
         .catch(error => {
           alert('An error occured.')
@@ -135,6 +151,8 @@ const App = () => {
     <div>
       <h2>Phonebook</h2>
       
+      <Notification message={message}/>
+
       <Filter query={query} changeQuery={changeQuery} />
 
       <h2>add a new</h2>
