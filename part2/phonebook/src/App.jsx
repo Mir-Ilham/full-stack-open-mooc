@@ -51,6 +51,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [query, setQuery] = useState('')
   const [message, setMessage] = useState(null)
+  const [messageType, setMessageType] = useState('success')
 
   const changeInputName = (event) => {
     setNewName(event.target.value)
@@ -87,6 +88,7 @@ const App = () => {
           .then(updatedPerson => {
             setPersons(persons.map(person => person.id == updatedPerson.id ? updatedPerson : person))
             
+            setMessageType('success')
             setMessage(`${updatedPerson.name}'s number updated.`)
             setTimeout(() => {
               setMessage(null)
@@ -111,6 +113,7 @@ const App = () => {
         setNewName('')
         setNewNumber('')
 
+        setMessageType('success')
         setMessage(`${returnedPerson.name}'s number added.`)
         setTimeout(() => {
           setMessage(null)
@@ -126,19 +129,24 @@ const App = () => {
       personService
         .deletePerson(personId)
         .then(deletedPerson => {
-          const newPersons = persons.filter(person =>
-            person.id != deletedPerson.id
-          )
-          setPersons(newPersons)
-
+          setMessageType('success')
           setMessage(`${deletedPerson.name}'s number deleted.`)
           setTimeout(() => {
             setMessage(null)
           }, 5000)
         })
         .catch(error => {
-          alert('An error occured.')
+          setMessageType('error')
+          setMessage(`${persons.find(person => person.id === personId).name}'s number already deleted from the server.`)
+          setTimeout(() => {
+            setMessage(null)
+          }, 5000)
         })
+
+        const newPersons = persons.filter(person =>
+          person.id != personId
+        )
+        setPersons(newPersons)
     }
   }
 
@@ -151,7 +159,7 @@ const App = () => {
     <div>
       <h2>Phonebook</h2>
       
-      <Notification message={message}/>
+      <Notification message={message} className={messageType} />
 
       <Filter query={query} changeQuery={changeQuery} />
 

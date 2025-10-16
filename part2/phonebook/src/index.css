@@ -9,3 +9,15 @@
   width: 50%;
   text-align: center;
 }
+
+.error {
+  color: red;
+  background: lightgrey;
+  font-size: 20px;
+  border-style: solid;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 10px;
+  width: 50%;
+  text-align: center;
+}
