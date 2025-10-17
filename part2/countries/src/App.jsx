@@ -1,22 +1,37 @@
 import { useState, useEffect } from 'react'
 import countryService from './services/countries'
 
+const CountryInfoShort = ({ country, handleShowCountry }) => {
+  return (
+    <div>
+      {country.name.common} &nbsp;
+      <button onClick={() => handleShowCountry(country.name.common)}>Show</button>
+    </div>
+  )
+}
 
-const CountryInfo = ({ country, nameOnly }) => {
-  if (nameOnly) {
-    return (
-      <p>{country.name.common}</p>
-    )
-  }
+const CountryInfo = ({ country }) => {
+  const [weather, setWeather] = useState({})
+
+  useEffect(() => {
+    countryService
+      .getCityWeather(country.capital[0])
+      .then(weatherData => {
+        setWeather(weatherData)
+      })
+      .catch(error => {
+        alert('An error occured')
+      })
+  }, [])
 
   return (
     <>
       <h1>{country.name.common}</h1>
 
-      <p>Capital {country.capital}</p>
+      <p>Capital {country.capital[0]}</p>
       <p>Area {country.area}</p>
 
-      <h1>Languages</h1>
+      <h2>Languages</h2>
       <ul>
         {
           Object.values(country.languages).map((language, idx) =>
@@ -26,11 +41,23 @@ const CountryInfo = ({ country, nameOnly }) => {
       </ul>
 
       <img src={country.flags.png} alt={`Flag of ${country.name.common}`}></img>
+
+      <h2>Weather in {country.capital[0]}</h2>
+
+      {weather.main !== undefined ?
+        <>
+          <p>Temperature { (weather.main.temp -273.15).toFixed(2) } Celsius</p>
+          <img src={`https://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`} alt={weather.weather[0].description} />
+          <p>Wind { weather.wind.speed } m/s</p>
+        </>
+        : "NA"
+      }
+
     </>
   )
 }
 
-const Display = ({countriesToDisplay}) => {
+const Display = ({countriesToDisplay, handleShowCountry}) => {
   if (countriesToDisplay.length == 0) {
     return (
       <p>No matches found</p>
@@ -42,14 +69,14 @@ const Display = ({countriesToDisplay}) => {
   } else if (countriesToDisplay.length == 1) {
     return (
       <div>
-        <CountryInfo country={countriesToDisplay[0]} nameOnly={false} />
+        <CountryInfo country={countriesToDisplay[0]} />
       </div>
     )
   } else {
     return (
       <div>
         {countriesToDisplay.map((country, idx) =>
-          <CountryInfo key={idx} country={country} nameOnly={true} />
+          <CountryInfoShort key={idx} country={country} handleShowCountry={handleShowCountry} />
         )}
       </div>
     )
@@ -77,6 +104,10 @@ const App = () => {
     setQuery(event.target.value)
   }
 
+  const handleShowCountry = (name) => {
+    setQuery(name)
+  }
+
   const countriesToDisplay = countries.filter(country => {
     return country.name.common.toLowerCase().includes(query.toLowerCase())
   })
@@ -87,7 +118,7 @@ const App = () => {
         find countries <input value={query} onChange={handleQueryChange} />
       </div>
 
-      <Display countriesToDisplay={countriesToDisplay} />
+      <Display countriesToDisplay={countriesToDisplay} handleShowCountry={handleShowCountry} />
     </div>
   )
 }
