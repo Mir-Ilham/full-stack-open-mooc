@@ -1,49 +1,10 @@
 import { useState, useEffect } from 'react'
 import Notification from './components/Notification'
+import Filter from './components/Filter'
+import PersonForm from './components/PersonForm'
 import personService from './services/persons'
+import Persons from './components/Persons'
 
-const Filter = ({query, changeQuery}) => {
-  return (
-    <div>
-      Search: <input value={query} onChange={changeQuery}/>
-    </div>
-  )
-}
-
-const PersonForm = ({addPerson, newName, changeInputName, newNumber, changeNumber}) => {
-  return (
-    <form onSubmit={addPerson}>
-      <div>
-        name: <input value={newName} onChange={changeInputName}/>
-      </div>
-      <div>
-        phone: <input value={newNumber} onChange={changeNumber}/>
-      </div>
-      <div>
-        <button type="submit">add</button>
-      </div>
-    </form>
-  )
-}
-
-const Person = ({name, number, deletePersonOf}) => {
-  return (
-    <p>
-      {name} {number} &nbsp;
-      <button onClick={deletePersonOf}>delete</button>
-    </p>
-  )
-}
-
-const Persons = ({personsToDisplay, deletePersonHandler}) => {
-  return (
-    <>
-      {personsToDisplay.map((person) =>
-        <Person key={person.id} name={person.name} number={person.number} deletePersonOf={() => deletePersonHandler(person.id)}/>
-      )}
-    </>
-  )
-}
 
 const App = () => {
   const [persons, setPersons] = useState([]) 
