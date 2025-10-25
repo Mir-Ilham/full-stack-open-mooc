@@ -64,21 +64,22 @@ app.post('/api/persons', (request, response) => {
     })
   }
 
-  const match = persons.find(person => person.name === name)
+  // const match = persons.find(person => person.name === name)
 
-  if (match) {
-    return response.status(400).json({
-      error: 'Name must be unique'
-    })
-  }
+  // if (match) {
+  //   return response.status(400).json({
+  //     error: 'Name must be unique'
+  //   })
+  // }
 
-  const id = String(Math.floor(Math.random() * 1000000000) + 1);
+  const person = new Person({
+    name: name,
+    number: number,
+  })
 
-  const person = request.body
-  person.id = id
-
-  persons = persons.concat(person)
-  response.json(person)
+  person.save().then(savedPerson => {
+    response.json(savedPerson)
+  })
 })
 
 app.delete('/api/persons/:id', (request, response) => {
