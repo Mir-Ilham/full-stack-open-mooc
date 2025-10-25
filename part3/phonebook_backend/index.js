@@ -83,12 +83,11 @@ app.post('/api/persons', (request, response) => {
 })
 
 app.delete('/api/persons/:id', (request, response) => {
-  const id = request.params.id
-  const match = persons.find(person => person.id === id)
-  persons = persons.filter(person => person.id !== id)
-
-  // response.status(204).end()
-  response.json(match)
+  Person.findByIdAndDelete(request.params.id)
+    .then(result => {
+      response.json(result)
+    })
+    .catch(error => console.log(error))
 })
 
 const PORT = process.env.PORT
