@@ -4,6 +4,7 @@ const mongoose = require('mongoose')
 const supertest = require('supertest')
 const app = require('../app')
 const Blog = require('../models/blog')
+const { blogsInDb } = require('./test_helper')
 const blogsData = require('./blogs_data')
 
 const api = supertest(app)
@@ -43,11 +44,11 @@ test('A valid blog can be added ', async () => {
     .expect(201)
     .expect('Content-Type', /application\/json/)
 
-  const response = await api.get('/api/blogs')
+  const blogs = await blogsInDb()
 
-  const titles = response.body.map(r => r.title)
+  const titles = blogs.map(r => r.title)
 
-  assert.strictEqual(response.body.length, blogsData.length + 1)
+  assert.strictEqual(blogs.length, blogsData.length + 1)
   assert(titles.includes(newBlog.title))
 })
 
@@ -64,11 +65,11 @@ test('A blog added without likes count defaults to zero', async () => {
     .expect(201)
     .expect('Content-Type', /application\/json/)
 
-  const response = await api.get('/api/blogs')
+  const blogs = await blogsInDb()
 
-  const savedBlog = response.body.find(blog => blog.title === newBlog.title)
+  const savedBlog = blogs.find(blog => blog.title === newBlog.title)
 
-  assert.strictEqual(response.body.length, blogsData.length + 1)
+  assert.strictEqual(blogs.length, blogsData.length + 1)
   assert.strictEqual(savedBlog.likes, 0)
 })
 
@@ -93,8 +94,8 @@ test('Attempting to add a blog without title or url is a bad request', async () 
     .send(newBlogNoURL)
     .expect(400)
 
-  const response = await api.get('/api/blogs')
-  assert.strictEqual(response.body.length, blogsData.length)
+  const blogs = await blogsInDb()
+  assert.strictEqual(blogs.length, blogsData.length)
 })
 
 after(async () => {
