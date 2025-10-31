@@ -19,6 +19,16 @@ test('All blogs returned', async () => {
   assert.strictEqual(response.body.length, blogsData.length)
 })
 
+test('Unique identifier property of blog posts is named id', async () => {
+  const response = await api.get('/api/blogs')
+
+  const blogs = response.body
+  const blog = blogs[0]
+
+  assert.ok(blog.id, 'Blog object should have an id property')
+  assert.strictEqual(blog._id, undefined, 'Blog object should not have an _id property')
+})
+
 after(async () => {
   await mongoose.connection.close()
 })
