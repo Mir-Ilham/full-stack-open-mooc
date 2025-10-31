@@ -51,6 +51,27 @@ test('A valid blog can be added ', async () => {
   assert(titles.includes(newBlog.title))
 })
 
+test('A blog added without likes count defaults to zero', async () => {
+  const newBlog =   {
+    title: 'Redux learning',
+    author: 'Michael Chan',
+    url: 'https://reactpatterns.com/',
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  const response = await api.get('/api/blogs')
+
+  const savedBlog = response.body.find(blog => blog.title === newBlog.title)
+
+  assert.strictEqual(response.body.length, blogsData.length + 1)
+  assert.strictEqual(savedBlog.likes, 0)
+})
+
 after(async () => {
   await mongoose.connection.close()
 })
