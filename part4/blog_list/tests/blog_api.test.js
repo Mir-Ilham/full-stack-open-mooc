@@ -25,8 +25,30 @@ test('Unique identifier property of blog posts is named id', async () => {
   const blogs = response.body
   const blog = blogs[0]
 
-  assert.ok(blog.id, 'Blog object should have an id property')
-  assert.strictEqual(blog._id, undefined, 'Blog object should not have an _id property')
+  assert.ok(blog.id)
+  assert.strictEqual(blog._id, undefined)
+})
+
+test('A valid blog can be added ', async () => {
+  const newBlog =   {
+    title: 'React router',
+    author: 'Michael Chan',
+    url: 'https://reactpatterns.com/',
+    likes: 6,
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  const response = await api.get('/api/blogs')
+
+  const titles = response.body.map(r => r.title)
+
+  assert.strictEqual(response.body.length, blogsData.length + 1)
+  assert(titles.includes(newBlog.title))
 })
 
 after(async () => {
