@@ -72,6 +72,31 @@ test('A blog added without likes count defaults to zero', async () => {
   assert.strictEqual(savedBlog.likes, 0)
 })
 
+test('Attempting to add a blog without title or url is a bad request', async () => {
+  const newBlogNoTitle =   {
+    author: 'Michael Chan',
+    url: 'https://reactpatterns.com/'
+  }
+
+  const newBlogNoURL =   {
+    title: 'Redux learning',
+    author: 'Michael Chan'
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlogNoTitle)
+    .expect(400)
+
+  await api
+    .post('/api/blogs')
+    .send(newBlogNoURL)
+    .expect(400)
+
+  const response = await api.get('/api/blogs')
+  assert.strictEqual(response.body.length, blogsData.length)
+})
+
 after(async () => {
   await mongoose.connection.close()
 })
