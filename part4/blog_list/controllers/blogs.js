@@ -19,6 +19,19 @@ blogsRouter.post('/', async (request, response) => {
   response.status(201).json(savedBlog)
 })
 
+blogsRouter.put('/:id', async (request, response) => {
+  const likes = request.body.likes
+
+  const blog = await Blog.findById(request.params.id)
+  if (!blog)
+    return response.status(404).end()
+
+  blog.likes = likes
+
+  const updatedBlog = await blog.save()
+  return response.json(updatedBlog)
+})
+
 blogsRouter.delete('/:id', async (request, response) => {
   const deletedBlog = await Blog.findByIdAndDelete(request.params.id)
   return response.json(deletedBlog)

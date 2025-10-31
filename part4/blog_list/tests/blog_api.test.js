@@ -112,6 +112,39 @@ test('Deleting a specific blog works', async () => {
   assert.strictEqual(blogs.length, blogsData.length - 1)
 })
 
+test('Attempting to delete a non-existent blog fails', async () => {
+  const blogToDelete = blogsData[0]
+
+  await api
+    .delete(`/api/blogs/${blogToDelete._id + '1'}`)
+    .send(blogToDelete)
+    .expect(400)
+})
+
+test('Updating a specific blog works', async () => {
+  const blogToUpdate = blogsData[0]
+  blogToUpdate.likes = 101
+
+  await api
+    .put(`/api/blogs/${blogToUpdate._id}`)
+    .send(blogToUpdate)
+    .expect(200)
+
+  const blogs = await blogsInDb()
+  const match = blogs.find(blog => blog.id === blogToUpdate._id)
+
+  assert.strictEqual(match.likes, blogToUpdate.likes)
+})
+
+test('Attempting to update a non-existent blog fails', async () => {
+  const blogToUpdate = blogsData[0]
+
+  await api
+    .put(`/api/blogs/${blogToUpdate._id + '1'}`)
+    .send(blogToUpdate)
+    .expect(400)
+})
+
 after(async () => {
   await mongoose.connection.close()
 })
