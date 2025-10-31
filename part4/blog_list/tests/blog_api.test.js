@@ -98,6 +98,20 @@ test('Attempting to add a blog without title or url is a bad request', async () 
   assert.strictEqual(blogs.length, blogsData.length)
 })
 
+test('Deleting a specific blog works', async () => {
+  const blogToDelete = blogsData[0]
+
+  await api
+    .delete(`/api/blogs/${blogToDelete._id}`)
+    .expect(200)
+
+  const blogs = await blogsInDb()
+  const match = blogs.find(blog => blog.id === blogToDelete._id)
+
+  assert.strictEqual(match, undefined)
+  assert.strictEqual(blogs.length, blogsData.length - 1)
+})
+
 after(async () => {
   await mongoose.connection.close()
 })
