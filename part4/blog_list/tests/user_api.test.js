@@ -61,6 +61,88 @@ describe('When there is initially one user in db', () => {
 
     assert.strictEqual(usersAtEnd.length, usersAtStart.length)
   })
+
+  test('creation fails with proper statuscode and message if username missing', async () => {
+    const usersAtStart = await usersInDb()
+
+    const newUser = {
+      name: 'Mir Ilham',
+      password: 'pforpassword',
+    }
+
+    const result = await api
+      .post('/api/users')
+      .send(newUser)
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+
+    const usersAtEnd = await usersInDb()
+    assert(result.body.error.includes('username or password missing'))
+
+    assert.strictEqual(usersAtEnd.length, usersAtStart.length)
+  })
+
+  test('creation fails with proper statuscode and message if password missing', async () => {
+    const usersAtStart = await usersInDb()
+
+    const newUser = {
+      username: 'Ilham',
+      name: 'Mir Ilham',
+    }
+
+    const result = await api
+      .post('/api/users')
+      .send(newUser)
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+
+    const usersAtEnd = await usersInDb()
+    assert(result.body.error.includes('username or password missing'))
+
+    assert.strictEqual(usersAtEnd.length, usersAtStart.length)
+  })
+
+  test('creation fails with proper statuscode and message if username of size < 3', async () => {
+    const usersAtStart = await usersInDb()
+
+    const newUser = {
+      username: 'Il',
+      name: 'Mir Ilham',
+      password: 'pforpassword',
+    }
+
+    const result = await api
+      .post('/api/users')
+      .send(newUser)
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+
+    const usersAtEnd = await usersInDb()
+    assert(result.body.error.includes('username or password length less than 3'))
+
+    assert.strictEqual(usersAtEnd.length, usersAtStart.length)
+  })
+
+  test('creation fails with proper statuscode and message if password of size < 3', async () => {
+    const usersAtStart = await usersInDb()
+
+    const newUser = {
+      username: 'Ilham',
+      name: 'Mir Ilham',
+      password: 'pw',
+    }
+
+    const result = await api
+      .post('/api/users')
+      .send(newUser)
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+
+    const usersAtEnd = await usersInDb()
+    assert(result.body.error.includes('username or password length less than 3'))
+
+    assert.strictEqual(usersAtEnd.length, usersAtStart.length)
+  })
 })
 
 after(async () => {
