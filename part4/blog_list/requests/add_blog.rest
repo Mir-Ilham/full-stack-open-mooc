@@ -2,7 +2,7 @@ POST http://127.0.0.1:3001/api/blogs/ HTTP/1.1
 content-type: application/json
 
 {
-  "title": "Debugging Anything",
+  "title": "Getting to code in VSCode",
   "author": "MHM Ilham",
   "url": "httpswww.googleblogs.com",
   "likes": 100
