@@ -1,11 +1,9 @@
 @token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJvb3QiLCJpZCI6IjY5MDcwNTE3MmQ3ZjM2NDc5MDRiYmUwYiIsImlhdCI6MTc2MjQxNzAxN30.Kg9s-jNFhXeT_DxXt5zoEN1BhkzOdY4YQbMJmAxY2Qk
-POST http://127.0.0.1:3001/api/blogs/ HTTP/1.1
+@blogId = 690c59b39bc162005fa3d4f1
+PUT http://127.0.0.1:3001/api/blogs/{{blogId}} HTTP/1.1
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-  "title": "A new dawn of AI 2",
-  "author": "MHM Ilham",
-  "url": "httpswww.googleblogs.com",
-  "likes": 100
+  "likes": 420
 }

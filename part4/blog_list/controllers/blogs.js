@@ -33,12 +33,18 @@ blogsRouter.post('/', userExtractor, async (request, response) => {
   response.status(201).json(savedBlog)
 })
 
-blogsRouter.put('/:id', async (request, response) => {
+blogsRouter.put('/:id', userExtractor, async (request, response) => {
   const likes = request.body.likes
 
+  const user = request.user
+  if (!user) {
+    return response.status(400).json({ error: 'userId missing or not valid' })
+  }
+
   const blog = await Blog.findById(request.params.id)
-  if (!blog)
+  if (!blog) {
     return response.status(404).end()
+  }
 
   blog.likes = likes
 
@@ -48,14 +54,13 @@ blogsRouter.put('/:id', async (request, response) => {
 
 blogsRouter.delete('/:id', userExtractor, async (request, response) => {
   const user = request.user
-  const blog = await Blog.findById(request.params.id)
-
   if (!user) {
     return response.status(400).json({ error: 'userId missing or not valid' })
   }
 
-  if (!blog.user || user._id.toString() !== blog.user.toString()) {
-    return response.status(401).json({ error: 'Unauthorized deletion request' })
+  const blog = await Blog.findById(request.params.id)
+  if (!blog || !blog.user || user._id.toString() !== blog.user.toString()) {
+    return response.status(401).json({ error: 'Invalid deletion request' })
   }
 
   await blog.deleteOne()

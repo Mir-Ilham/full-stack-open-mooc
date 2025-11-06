@@ -1,5 +1,5 @@
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJvb3QiLCJpZCI6IjY5MDcwNTE3MmQ3ZjM2NDc5MDRiYmUwYiIsImlhdCI6MTc2MjQxNjM3OH0.ZNlKwRzlafb_0FlX5QmuO5PYwJT2FvsC8sA6i-fDHb8
-@blogId = 690c56d1e1607aa402032c06
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJvb3QiLCJpZCI6IjY5MDcwNTE3MmQ3ZjM2NDc5MDRiYmUwYiIsImlhdCI6MTc2MjQxNzAxN30.Kg9s-jNFhXeT_DxXt5zoEN1BhkzOdY4YQbMJmAxY2Qk
+@blogId = 690c59b39bc162005fa3d4f1
 DELETE http://127.0.0.1:3001/api/blogs/{{blogId}} HTTP/1.1
 Authorization: Bearer {{token}}
 Content-Type: application/json
