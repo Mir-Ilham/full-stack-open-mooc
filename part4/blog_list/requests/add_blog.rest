@@ -1,9 +1,9 @@
 POST http://127.0.0.1:3001/api/blogs/ HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJvb3QiLCJpZCI6IjY5MDcwNTE3MmQ3ZjM2NDc5MDRiYmUwYiIsImlhdCI6MTc2MjQxMTkyN30.iDN9IqhfAeZYLp4UAqpoKu4cJ7-bn2DVgs9wwTh2cF4
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJvb3QiLCJpZCI6IjY5MDcwNTE3MmQ3ZjM2NDc5MDRiYmUwYiIsImlhdCI6MTc2MjQxNjMwNX0.GTQYu2Bk-WAdUtCSmaKQZJmvaCR-lb_tB6y8KElKn7I
 
 {
-  "title": "Getting to code in VSCode",
+  "title": "A new dawn of AI 2",
   "author": "MHM Ilham",
   "url": "httpswww.googleblogs.com",
   "likes": 100
