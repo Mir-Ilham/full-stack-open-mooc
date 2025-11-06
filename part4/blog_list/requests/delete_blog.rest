@@ -1,0 +1,5 @@
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJvb3QiLCJpZCI6IjY5MDcwNTE3MmQ3ZjM2NDc5MDRiYmUwYiIsImlhdCI6MTc2MjQxMzkwM30.ejj5YvNOKjJkRKZivh2FRhqETe90KIB11DGm4QCcRVU
+@blogId = 68ff78d63425a5ee20ee0cda
+DELETE http://127.0.0.1:3001/api/blogs/{{blogId}} HTTP/1.1
+Authorization: Bearer {{token}}
+Content-Type: application/json
