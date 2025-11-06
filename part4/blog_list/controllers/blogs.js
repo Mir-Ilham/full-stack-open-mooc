@@ -42,8 +42,8 @@ blogsRouter.put('/:id', userExtractor, async (request, response) => {
   }
 
   const blog = await Blog.findById(request.params.id)
-  if (!blog) {
-    return response.status(404).end()
+  if (!blog || !blog.user || user._id.toString() !== blog.user.toString()) {
+    return response.status(401).json({ error: 'Invalid update request' })
   }
 
   blog.likes = likes
