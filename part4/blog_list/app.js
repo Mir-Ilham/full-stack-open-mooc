@@ -25,6 +25,7 @@ mongoose.connect(mongoUrl)
 
 app.use(express.json())
 app.use(cors())
+app.use(middleware.tokenExtractor)
 
 if (process.env.NODE_ENV !== 'test') {
   morgan.token('post-data', (request) => {
