@@ -1,5 +1,6 @@
 POST http://127.0.0.1:3001/api/blogs/ HTTP/1.1
-content-type: application/json
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJvb3QiLCJpZCI6IjY5MDcwNTE3MmQ3ZjM2NDc5MDRiYmUwYiIsImlhdCI6MTc2MjQxMTA4MH0.rOlHiNR5Ma3tedAHrB_eMMYiol9OAx8xZCHrFa1B2jk
 
 {
   "title": "Getting to code in VSCode",
