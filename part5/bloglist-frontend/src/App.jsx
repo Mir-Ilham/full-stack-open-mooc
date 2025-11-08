@@ -7,6 +7,7 @@ import loginService from './services/login'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
+  const [message, setMessage] = useState(null)
   const [errorMessage, setErrorMessage] = useState(null)
 
   // States relating to login
@@ -47,6 +48,11 @@ const App = () => {
       setUser(user)
       setUsername('')
       setPassword('')
+
+      setMessage('Login successful')
+      setTimeout(() => {
+        setMessage(null)
+      }, 5000)
     } catch {
       setErrorMessage('wrong credentials')
       setTimeout(() => {
@@ -58,6 +64,11 @@ const App = () => {
   const handleLogout = () => {
     window.localStorage.removeItem("loggedUser")
     setUser(null)
+
+    setMessage('Logout successful')
+    setTimeout(() => {
+      setMessage(null)
+    }, 5000)
   }
 
   const handleCreateBlog = async event => {
@@ -77,6 +88,11 @@ const App = () => {
       setAuthor('')
       setUrl('')
       setBlogs(blogs.concat(blog))
+
+      setMessage(`New blog: ${blog.title} added.`)
+      setTimeout(() => {
+        setMessage(null)
+      }, 5000)
     } catch (exception) {
       setErrorMessage(`Error: ${exception.message}`)
       setTimeout(() => {
@@ -87,7 +103,8 @@ const App = () => {
 
   return (
     <div>
-      {errorMessage && <p>{errorMessage}</p>}
+      {message && <div className='success'>{message}</div>}
+      {errorMessage && <div className='error'>{errorMessage}</div>}
       {user ?
         <>
           <h2>Blogs</h2>
