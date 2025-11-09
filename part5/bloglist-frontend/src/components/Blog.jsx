@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import blogService from '../services/blogs'
 
-const Blog = ({ blog }) => {
+const Blog = ({ blog, sortBlog }) => {
   const [visible, setVisible] = useState(false)
   const [likes, setLikes] = useState(blog.likes)
 
@@ -23,7 +23,8 @@ const Blog = ({ blog }) => {
   const handleLikeBlog = async () => {
     try {
       await blogService.likeBlog(blog.id, likes + 1)
-      setLikes(likes + 1)
+      await setLikes(likes + 1)
+      sortBlog(blog.id)
     } catch {
       alert('An error occured')
     }
