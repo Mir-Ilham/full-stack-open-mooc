@@ -80,7 +80,7 @@ const App = () => {
 
     try {
       blogFormRef.current.toggleVisibility()
-      
+
       const blog = await blogService.create({ title, author, url })
       setBlogs(blogs.concat(blog))
 
