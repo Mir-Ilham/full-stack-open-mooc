@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
+import Togglable from './components/Togglable'
 import LoginForm from './components/LoginForm'
 import CreateBlogForm from './components/CreateBlogForm'
 import blogService from './services/blogs'
@@ -15,11 +16,6 @@ const App = () => {
   const [password, setPassword] = useState('') 
   const [user, setUser] = useState(null)
 
-  // States relating to blog creation
-  const [title, setTitle] = useState('') 
-  const [author, setAuthor] = useState('') 
-  const [url, setUrl] = useState('') 
-
   useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs( blogs )
@@ -34,6 +30,8 @@ const App = () => {
       blogService.setToken(user.token)
     }
   }, [])
+
+  const blogFormRef = useRef()
 
   const handleLogin = async event => {
     event.preventDefault()
@@ -71,9 +69,7 @@ const App = () => {
     }, 5000)
   }
 
-  const handleCreateBlog = async event => {
-    event.preventDefault()
-
+  const createBlog = async (title, author, url) => {
     if (!author || !title || !url) {
       setErrorMessage('Complete all blog entries')
       setTimeout(() => {
@@ -83,10 +79,9 @@ const App = () => {
     }
 
     try {
+      blogFormRef.current.toggleVisibility()
+      
       const blog = await blogService.create({ title, author, url })
-      setTitle('')
-      setAuthor('')
-      setUrl('')
       setBlogs(blogs.concat(blog))
 
       setMessage(`New blog: ${blog.title} added.`)
@@ -111,13 +106,9 @@ const App = () => {
 
           <div>{user.username} is logged in <button onClick={() => handleLogout()}>Logout</button></div>
 
-          <CreateBlogForm handleCreateBlog={handleCreateBlog} 
-                    title={title} 
-                    setTitle={setTitle} 
-                    author={author} 
-                    setAuthor={setAuthor}
-                    url={url}
-                    setUrl={setUrl}/>
+          <Togglable buttonLabel='Create new blog' ref={blogFormRef}>
+            <CreateBlogForm createBlog={createBlog} />
+          </Togglable>
 
           {blogs.map(blog =>
             <Blog key={blog.id} blog={blog} />
@@ -128,7 +119,7 @@ const App = () => {
                   username={username} 
                   setUsername={setUsername} 
                   password={password} 
-                  setPassword={setPassword}/>
+                  setPassword={setPassword} />
       }
 
     </div>
