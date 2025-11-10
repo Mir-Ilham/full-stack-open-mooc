@@ -12,15 +12,15 @@ const App = () => {
   const [errorMessage, setErrorMessage] = useState(null)
 
   // States relating to login
-  const [username, setUsername] = useState('') 
-  const [password, setPassword] = useState('') 
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
 
   useEffect(() => {
     blogService.getAll().then(blogs => {
       blogs.sort((a, b) => b.likes - a.likes)
       setBlogs(blogs)
-    })  
+    })
   }, [])
 
   useEffect(() => {
@@ -61,7 +61,7 @@ const App = () => {
   }
 
   const handleLogout = () => {
-    window.localStorage.removeItem("loggedUser")
+    window.localStorage.removeItem('loggedUser')
     setUser(null)
 
     setMessage('Logout successful')
@@ -143,10 +143,10 @@ const App = () => {
           )}
         </>
         :
-        <LoginForm handleLogin={handleLogin} 
-                  username={username} 
-                  setUsername={setUsername} 
-                  password={password} 
+        <LoginForm handleLogin={handleLogin}
+                  username={username}
+                  setUsername={setUsername}
+                  password={password}
                   setPassword={setPassword} />
       }
 
