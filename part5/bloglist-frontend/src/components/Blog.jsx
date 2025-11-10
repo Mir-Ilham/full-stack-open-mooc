@@ -3,7 +3,6 @@ import blogService from '../services/blogs'
 
 const Blog = ({ blog, currentUser, sortBlog, deleteBlog}) => {
   const [visible, setVisible] = useState(false)
-  const [likes, setLikes] = useState(blog.likes)
 
   const hideWhenVisible = { display: visible ? 'none' : '' }
   const showWhenVisible = { display: visible ? '' : 'none' }
@@ -22,8 +21,7 @@ const Blog = ({ blog, currentUser, sortBlog, deleteBlog}) => {
 
   const handleLikeBlog = async () => {
     try {
-      await blogService.likeBlog(blog.id, likes + 1)
-      await setLikes(likes + 1)
+      await blogService.likeBlog(blog.id, blog.likes + 1)
       sortBlog(blog.id)
     } catch {
       alert('An error occured')
@@ -53,7 +51,7 @@ const Blog = ({ blog, currentUser, sortBlog, deleteBlog}) => {
         <p>{blog.url}</p>
 
         <p>
-          likes {likes}
+          likes {blog.likes}
           <button onClick={handleLikeBlog}>like</button>
         </p>
 
