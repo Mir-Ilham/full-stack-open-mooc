@@ -97,14 +97,26 @@ const App = () => {
     }
   }
 
-  const sortBlog = (id) => {
-    const updatedBlogs = blogs.map(blog =>
-      blog.id === id
-        ? { ...blog, likes: blog.likes + 1 }
-        : blog
-    )
-    updatedBlogs.sort((a, b) => b.likes - a.likes)
-    setBlogs(updatedBlogs)
+  const likeBlog = async (id, likes) => {
+    try {
+      await blogService.likeBlog(id, likes)
+      const updatedBlogs = blogs.map(blog =>
+        blog.id === id
+          ? { ...blog, likes: blog.likes + 1 }
+          : blog
+      )
+      sortBlog(updatedBlogs)
+    } catch (exception) {
+      setErrorMessage(`Error: ${exception.message}`)
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)
+    }
+  }
+
+  const sortBlog = (newBlogs) => {
+    newBlogs.sort((a, b) => b.likes - a.likes)
+    setBlogs(newBlogs)
   }
 
   const deleteBlog = async (id) => {
@@ -139,7 +151,11 @@ const App = () => {
           </Togglable>
 
           {blogs.map(blog =>
-            <Blog key={blog.id} blog={blog} currentUser={user.username} sortBlog={sortBlog} deleteBlog={deleteBlog} />
+            <Blog key={blog.id}
+                  blog={blog}
+                  currentUser={user.username}
+                  likeBlog={likeBlog}
+                  deleteBlog={deleteBlog} />
           )}
         </>
         :
