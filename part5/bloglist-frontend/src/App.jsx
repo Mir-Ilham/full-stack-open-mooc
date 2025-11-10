@@ -107,6 +107,23 @@ const App = () => {
     setBlogs(updatedBlogs)
   }
 
+  const deleteBlog = async (id) => {
+    try {
+      const deletedBlog = await blogService.deleteBlog(id)
+      setBlogs(blogs.filter(blog => blog.id !== deletedBlog.id))
+
+      setMessage(`${deletedBlog.title} deleted.`)
+      setTimeout(() => {
+        setMessage(null)
+      }, 5000)
+    } catch (exception) {
+      setErrorMessage(`Error: ${exception.message}`)
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)
+    }
+  }
+
   return (
     <div>
       {message && <div className='success'>{message}</div>}
@@ -122,7 +139,7 @@ const App = () => {
           </Togglable>
 
           {blogs.map(blog =>
-            <Blog key={blog.id} blog={blog} sortBlog={sortBlog} />
+            <Blog key={blog.id} blog={blog} currentUser={user.username} sortBlog={sortBlog} deleteBlog={deleteBlog} />
           )}
         </>
         :
