@@ -66,4 +66,27 @@ describe('<Blog />', () => {
     element = screen.getByText('www.mhmilham.com')
     expect(element).toBeVisible()
   })
+
+  test('clicking like button twice calls likeBlog function twice', async () => {
+    const blog = {
+      title: 'The dawn of AI',
+      author: 'MHM Ilham',
+      url: 'www.mhmilham.com',
+      likes: 0,
+      user: {
+        username: 'ilham'
+      }
+    }
+
+    const likeBlog = vi.fn()
+
+    render(<Blog blog={blog} currentUser={blog.user.username} likeBlog={likeBlog} />)
+
+    const likeButton = screen.getByText('like')
+    const user = userEvent.setup()
+    await user.click(likeButton)
+    await user.click(likeButton)
+
+    expect(likeBlog.mock.calls).toHaveLength(2)
+  })
 })
