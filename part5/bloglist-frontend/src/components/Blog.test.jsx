@@ -1,4 +1,5 @@
 import { render, screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import Blog from './Blog'
 
 describe('<Blog />', () => {
@@ -40,5 +41,29 @@ describe('<Blog />', () => {
 
     element = screen.getByText('www.mhmilham.com')
     expect(element).not.toBeVisible()
+  })
+
+  test('blog url or number of likes visible when view button clicked', async () => {
+    const blog = {
+      title: 'The dawn of AI',
+      author: 'MHM Ilham',
+      url: 'www.mhmilham.com',
+      likes: 0,
+      user: {
+        username: 'ilham'
+      }
+    }
+
+    render(<Blog blog={blog} currentUser={blog.user.username}/>)
+
+    const viewButton = screen.getByText('view')
+    const user = userEvent.setup()
+    await user.click(viewButton)
+
+    let element = screen.getByText('likes', { exact: false })
+    expect(element).toBeVisible()
+
+    element = screen.getByText('www.mhmilham.com')
+    expect(element).toBeVisible()
   })
 })
