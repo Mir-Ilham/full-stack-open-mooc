@@ -21,3 +21,10 @@
   width: 50%;
   text-align: center;
 }
+
+.blog-style {
+  padding-top: 10px;
+  padding-left: 2px;
+  border: 1px solid;
+  margin-bottom: 5px;
+}

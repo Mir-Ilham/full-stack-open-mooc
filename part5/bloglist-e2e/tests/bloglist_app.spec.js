@@ -23,12 +23,12 @@ describe('Blog app', () => {
 
   describe('Login', () => {
     test('succeeds with correct credentials', async ({ page }) => {
-      loginWith(page, 'Ilham', 'pforpassword')
+      await loginWith(page, 'Ilham', 'pforpassword')
       await expect(page.getByText('Ilham is logged in')).toBeVisible()
     })
 
     test('fails with wrong credentials', async ({ page }) => {
-      loginWith(page, 'Ilham', 'dforpassword')
+      await loginWith(page, 'Ilham', 'dforpassword')
 
       const errorDiv = page.locator('.error')
       await expect(errorDiv).toContainText('wrong credentials')
@@ -41,16 +41,16 @@ describe('Blog app', () => {
 
   describe('When logged in', () => {
     beforeEach(async ({ page }) => {
-      loginWith(page, 'Ilham', 'pforpassword')
+      await loginWith(page, 'Ilham', 'pforpassword')
     })
 
     test('a new blog can be created', async ({ page }) => {
-      createBlog(page, 'Getting to code in VSCode', 'MHM Ilham', 'www.mhmilham.com')
+      await createBlog(page, 'Getting to code in VSCode', 'MHM Ilham', 'www.mhmilham.com')
       await expect(page.getByText('Getting to code in VSCode').first()).toBeVisible()
     })
 
     test('a blog can be liked', async ({ page }) => {
-      createBlog(page, 'Getting to code in VSCode', 'MHM Ilham', 'www.mhmilham.com')
+      await createBlog(page, 'Getting to code in VSCode', 'MHM Ilham', 'www.mhmilham.com')
 
       await page.getByRole('button', { name: 'view' }).click()
       await page.getByRole('button', { name: 'like' }).click()
@@ -60,7 +60,7 @@ describe('Blog app', () => {
 
     test('a blog created can be deleted by the user', async ({ page }) => {
       // User creates a blog
-      createBlog(page, 'Getting to code in VSCode', 'MHM Ilham', 'www.mhmilham.com')
+      await createBlog(page, 'Getting to code in VSCode', 'MHM Ilham', 'www.mhmilham.com')
 
       // User can view remove button and removes the blog
       await page.getByRole('button', { name: 'view' }).click()
@@ -78,7 +78,7 @@ describe('Blog app', () => {
 
     test('a blog\'s delete button can only be seen by the blog creator', async ({ request, page }) => {
       // User creates a blog
-      createBlog(page, 'Getting to code in VSCode', 'MHM Ilham', 'www.mhmilham.com')
+      await createBlog(page, 'Getting to code in VSCode', 'MHM Ilham', 'www.mhmilham.com')
 
       // User can view remove button
       await page.getByRole('button', { name: 'view' }).click()
@@ -96,11 +96,41 @@ describe('Blog app', () => {
         }
       })
 
-      loginWith(page, 'newuser', 'pforpassword')
+      await loginWith(page, 'newuser', 'pforpassword')
 
       // New user can't view remove button
       await page.getByRole('button', { name: 'view' }).click()
       await expect(page.getByRole('button', { name: 'remove' })).not.toBeVisible()
+    })
+
+    test('created blogs are sorted in descending order of likes', async ({ page }) => {
+      // User creates blogs
+      await createBlog(page, 'Getting to code in VSCode', 'MHM Ilham', 'www.mhmilham.com')
+      await expect(page.locator('.blog-style')).toHaveCount(1)
+      await createBlog(page, 'Javascript in depth', 'MHM Ilham', 'www.mhmilham.com')
+      await expect(page.locator('.blog-style')).toHaveCount(2)
+      await createBlog(page, 'NodeJs and Express', 'MHM Ilham', 'www.mhmilham.com')
+      await expect(page.locator('.blog-style')).toHaveCount(3)
+
+      // Open view of blogs
+      await page.getByRole('button', { name: 'view' }).first().click()
+      await expect(page.getByRole('button', { name: 'view' })).toHaveCount(2)
+      await page.getByRole('button', { name: 'view' }).first().click()
+      await expect(page.getByRole('button', { name: 'view' })).toHaveCount(1)
+      await page.getByRole('button', { name: 'view' }).click()
+
+      // Like the third blog once and second blog twice
+      await page.getByRole('button', { name: 'like' }).nth(2).click()
+      await expect(page.getByText('likes 1')).toHaveCount(1)
+      await page.getByRole('button', { name: 'like' }).nth(2).click()
+      await expect(page.getByText('likes 1')).toHaveCount(2)
+      await page.getByRole('button', { name: 'like' }).nth(1).click()
+      await expect(page.getByText('likes 2')).toHaveCount(1)
+
+      // The blog with the highest like count is at the start and all blogs sorted in descending order
+      await expect(page.locator('.blog-style').first().getByText('Javascript in depth').nth(1)).toBeVisible()
+      await expect(page.locator('.blog-style').nth(1).getByText('NodeJs and Express').nth(1)).toBeVisible()
+      await expect(page.locator('.blog-style').nth(2).getByText('Getting to code in VSCode').nth(1)).toBeVisible()
     })
   })
 })

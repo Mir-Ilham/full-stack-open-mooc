@@ -10,14 +10,6 @@ const Blog = ({ blog, currentUser, likeBlog, deleteBlog }) => {
     setVisible(!visible)
   }
 
-  const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    border: 'solid',
-    borderWidth: 1,
-    marginBottom: 5
-  }
-
   const handleLikeBlog = async () => {
     likeBlog(blog.id, blog.likes + 1)
   }
@@ -29,7 +21,7 @@ const Blog = ({ blog, currentUser, likeBlog, deleteBlog }) => {
   }
 
   return (
-    <div style={blogStyle}>
+    <div class='blog-style'>
       <div style={hideWhenVisible}>
         <p>
           {blog.title} {blog.author}
