@@ -1,9 +1,10 @@
 const { test, expect, beforeEach, describe } = require('@playwright/test')
+const { loginWith, createBlog } = require('./helper')
 
 describe('Blog app', () => {
   beforeEach(async ({ page, request }) => {
-    await request.post('http://localhost:3001/api/testing/reset')
-    await request.post('http://localhost:3001/api/users', {
+    await request.post('/api/testing/reset')
+    await request.post('/api/users', {
       data: {
         username: 'Ilham',
         name: 'MHM Ilham',
@@ -11,7 +12,7 @@ describe('Blog app', () => {
       }
     })
 
-    await page.goto('http://localhost:5173')
+    await page.goto('/')
   })
 
   test('Login form is shown', async ({ page }) => {
@@ -22,16 +23,12 @@ describe('Blog app', () => {
 
   describe('Login', () => {
     test('succeeds with correct credentials', async ({ page }) => {
-      await page.getByLabel('username').fill('Ilham')
-      await page.getByLabel('password').fill('pforpassword')
-      await page.getByRole('button', { name: 'login' }).click()
+      loginWith(page, 'Ilham', 'pforpassword')
       await expect(page.getByText('Ilham is logged in')).toBeVisible()
     })
 
     test('fails with wrong credentials', async ({ page }) => {
-      await page.getByLabel('username').fill('Ilham')
-      await page.getByLabel('password').fill('dforpassword')
-      await page.getByRole('button', { name: 'login' }).click()
+      loginWith(page, 'Ilham', 'dforpassword')
 
       const errorDiv = page.locator('.error')
       await expect(errorDiv).toContainText('wrong credentials')
@@ -44,39 +41,26 @@ describe('Blog app', () => {
 
   describe('When logged in', () => {
     beforeEach(async ({ page }) => {
-      await page.getByLabel('username').fill('Ilham')
-      await page.getByLabel('password').fill('pforpassword')
-      await page.getByRole('button', { name: 'login' }).click()
+      loginWith(page, 'Ilham', 'pforpassword')
     })
 
     test('a new blog can be created', async ({ page }) => {
-      await page.getByRole('button', { name: 'Create new blog' }).click()
-      await page.getByLabel('title:').fill('Getting to code in VSCode')
-      await page.getByLabel('author:').fill('MHM Ilham')
-      await page.getByLabel('url:').fill('www.mhmilham.com')
-      await page.getByRole('button', { name: 'create' }).click()
+      createBlog(page, 'Getting to code in VSCode', 'MHM Ilham', 'www.mhmilham.com')
       await expect(page.getByText('Getting to code in VSCode').first()).toBeVisible()
     })
 
     test('a blog can be liked', async ({ page }) => {
-      await page.getByRole('button', { name: 'Create new blog' }).click()
-      await page.getByLabel('title:').fill('Getting to code in VSCode')
-      await page.getByLabel('author:').fill('MHM Ilham')
-      await page.getByLabel('url:').fill('www.mhmilham.com')
-      await page.getByRole('button', { name: 'create' }).click()
-      await page.getByRole('button', { name: 'view' }).click()
+      createBlog(page, 'Getting to code in VSCode', 'MHM Ilham', 'www.mhmilham.com')
 
+      await page.getByRole('button', { name: 'view' }).click()
       await page.getByRole('button', { name: 'like' }).click()
+  
       await expect(page.getByText('likes 1')).toBeVisible()
     })
 
     test('a blog created can be deleted by the user', async ({ page }) => {
       // User creates a blog
-      await page.getByRole('button', { name: 'Create new blog' }).click()
-      await page.getByLabel('title:').fill('Getting to code in VSCode')
-      await page.getByLabel('author:').fill('MHM Ilham')
-      await page.getByLabel('url:').fill('www.mhmilham.com')
-      await page.getByRole('button', { name: 'create' }).click()
+      createBlog(page, 'Getting to code in VSCode', 'MHM Ilham', 'www.mhmilham.com')
 
       // User can view remove button and removes the blog
       await page.getByRole('button', { name: 'view' }).click()
@@ -90,6 +74,33 @@ describe('Blog app', () => {
 
       // Blog is deleted
       await expect(page.getByText('Getting to code in VSCode')).toHaveCount(0)
+    })
+
+    test('a blog\'s delete button can only be seen by the blog creator', async ({ request, page }) => {
+      // User creates a blog
+      createBlog(page, 'Getting to code in VSCode', 'MHM Ilham', 'www.mhmilham.com')
+
+      // User can view remove button
+      await page.getByRole('button', { name: 'view' }).click()
+      await expect(page.getByRole('button', { name: 'remove' })).toBeVisible()
+
+      // User logout
+      await page.getByRole('button', { name: 'Logout' }).click()
+
+      // New User log in
+      await request.post('/api/users', {
+        data: {
+          username: 'newuser',
+          name: 'New User',
+          password: 'pforpassword'
+        }
+      })
+
+      loginWith(page, 'newuser', 'pforpassword')
+
+      // New user can't view remove button
+      await page.getByRole('button', { name: 'view' }).click()
+      await expect(page.getByRole('button', { name: 'remove' })).not.toBeVisible()
     })
   })
 })
