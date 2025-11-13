@@ -85,7 +85,7 @@ const App = () => {
       const blog = await blogService.create({ title, author, url })
       setBlogs(blogs.concat(blog))
 
-      setMessage(`New blog: ${blog.title} added.`)
+      setMessage('New blog added')
       setTimeout(() => {
         setMessage(null)
       }, 5000)
@@ -124,7 +124,7 @@ const App = () => {
       const deletedBlog = await blogService.deleteBlog(id)
       setBlogs(blogs.filter(blog => blog.id !== deletedBlog.id))
 
-      setMessage(`${deletedBlog.title} deleted.`)
+      setMessage('Blog deleted')
       setTimeout(() => {
         setMessage(null)
       }, 5000)

@@ -69,5 +69,27 @@ describe('Blog app', () => {
       await page.getByRole('button', { name: 'like' }).click()
       await expect(page.getByText('likes 1')).toBeVisible()
     })
+
+    test('a blog created can be deleted by the user', async ({ page }) => {
+      // User creates a blog
+      await page.getByRole('button', { name: 'Create new blog' }).click()
+      await page.getByLabel('title:').fill('Getting to code in VSCode')
+      await page.getByLabel('author:').fill('MHM Ilham')
+      await page.getByLabel('url:').fill('www.mhmilham.com')
+      await page.getByRole('button', { name: 'create' }).click()
+
+      // User can view remove button and removes the blog
+      await page.getByRole('button', { name: 'view' }).click()
+      await expect(page.getByRole('button', { name: 'remove' })).toBeVisible()
+
+      page.once('dialog', async (dialog) => {
+        await dialog.accept()
+      })
+
+      await page.getByRole('button', { name: 'remove' }).click()
+
+      // Blog is deleted
+      await expect(page.getByText('Getting to code in VSCode')).toHaveCount(0)
+    })
   })
 })
