@@ -24,4 +24,17 @@ const postAnecdote = async (content) => {
   return await response.json()
 }
 
-export default { getAll, postAnecdote }
+const voteAnecdote = async (id) => {
+  let anecdoteToUpdate = await fetch(`${baseUrl}/${id}`)
+  anecdoteToUpdate = await anecdoteToUpdate.json()
+  
+  const updatedAnecdote = await fetch(`${baseUrl}/${id}`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ votes: anecdoteToUpdate.votes + 1 })
+  })
+
+  return await updatedAnecdote.json()
+}
+
+export default { getAll, postAnecdote, voteAnecdote }
