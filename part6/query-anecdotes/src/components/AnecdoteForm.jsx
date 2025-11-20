@@ -14,6 +14,11 @@ const AnecdoteForm = () => {
     onSuccess: (newAnecdote) => {
       const anecdotes = queryClient.getQueryData(['anecdotes'])
       queryClient.setQueryData(['anecdotes'], anecdotes.concat(newAnecdote))
+
+      notificationDispatch({ type: 'SET', payload: `anecdote '${newAnecdote.content}' created` })
+      setTimeout(() => {
+        notificationDispatch({ type: 'UNSET' })
+      }, 5000)
     }
   })
 
@@ -22,11 +27,6 @@ const AnecdoteForm = () => {
     const content = event.target.anecdote.value
     event.target.anecdote.value = ''
     newAnecdoteMutation.mutate({ content, votes: 0 })
-
-    notificationDispatch({ type: 'SET', payload: `anecdote '${content}' created` })
-    setTimeout(() => {
-      notificationDispatch({ type: 'UNSET' })
-    }, 5000)
   }
 
   return (

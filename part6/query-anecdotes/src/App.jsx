@@ -23,6 +23,11 @@ const App = () => {
       queryClient.setQueryData(['anecdotes'], anecdotes.map(anecdote => {
         return anecdote.id === updatedAnecdote.id ? updatedAnecdote : anecdote
       }))
+
+      notificationDispatch({ type: 'SET', payload: `anecdote '${updatedAnecdote.content}' voted` })
+      setTimeout(() => {
+        notificationDispatch({ type: 'UNSET' })
+      }, 5000)
     }
   })
 
@@ -36,11 +41,6 @@ const App = () => {
 
   const handleVote = (anecdote) => {
     voteAnecdoteMutation.mutate({ ...anecdote, votes: anecdote.votes + 1 })
-
-    notificationDispatch({ type: 'SET', payload: `anecdote '${anecdote.content}' voted` })
-    setTimeout(() => {
-      notificationDispatch({ type: 'UNSET' })
-    }, 5000)
   }
 
   return (
