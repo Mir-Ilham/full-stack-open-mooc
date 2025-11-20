@@ -19,6 +19,12 @@ const AnecdoteForm = () => {
       setTimeout(() => {
         notificationDispatch({ type: 'UNSET' })
       }, 5000)
+    },
+    onError: (error) => {
+      notificationDispatch({ type: 'SET', payload: error.message })
+      setTimeout(() => {
+        notificationDispatch({ type: 'UNSET' })
+      }, 5000)
     }
   })
 
